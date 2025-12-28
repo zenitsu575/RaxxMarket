@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RaxxMarket - Order via web 2023-2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset dan variabel CSS */
+        :root {
+            --primary-color: #0c1b33;
+            --secondary-color: #112240;
+            --accent-color: #64ffda;
+            --text-color: #e6f1ff;
+            --text-secondary: #8892b0;
+            --star-color: #ffffff;
+            --nebula-purple: #a855f7;
+            --nebula-blue: #3b82f6;
+            --card-bg: rgba(17, 34, 64, 0.85);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Background alam semesta yang lebih sepi */
+        .universe-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(12, 27, 51, 0.9) 0%, rgba(6, 14, 26, 0.95) 70%),
+                radial-gradient(ellipse at 80% 80%, rgba(12, 27, 51, 0.8) 0%, rgba(6, 14, 26, 0.9) 70%);
+        }
+        
+        /* Background bintang yang lebih banyak */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: var(--star-color);
+            border-radius: 50%;
+            animation: twinkle 8s infinite;
+        }
+        
+        /* Bintang-bintang besar dan kecil */
+        .star.small {
+            width: 1px;
+            height: 1px;
+            opacity: 0.5;
+        }
+        
+        .star.medium {
+            width: 2px;
+            height: 2px;
+            opacity: 0.7;
+        }
+        
+        .star.large {
+            width: 3px;
+            height: 3px;
+            opacity: 0.9;
+        }
+        
+        /* Bintang berkedip dengan pola berbeda */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes slow-twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.8; }
+        }
+        
+        @keyframes fast-twinkle {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+        
+        /* Beberapa bintang bergerak perlahan (efek bintang jatuh) */
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 30px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8));
+            transform: rotate(45deg);
+            opacity: 0;
+        }
+        
+        /* Header */
+        header {
+            background-color: rgba(12, 27, 51, 0.85);
+            backdrop-filter: blur(15px);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: var(--accent-color);
+            font-size: 2rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--accent-color), #4cc9f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Kontrol musik */
+        .music-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: rgba(17, 34, 64, 0.8);
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+        
+        .music-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .music-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .music-artist {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        #playPauseBtn {
+            background-color: var(--accent-color);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        #playPauseBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+        
+        /* Konten utama */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .intro {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2.5rem;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 255, 218, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .intro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(100, 255, 218, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        .intro h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #4cc9f0, var(--nebula-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .intro p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* Produk */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .product-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(100, 255, 218, 0.15);
+            border-color: var(--accent-color);
+        }
+        
+        .product-img {
+            height: 200px;
+            width: 100%;
+            background-color: rgba(17, 34, 64, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: var(--accent-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-img::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(100, 255, 218, 0.05) 0%, transparent 70%);
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-info p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 1.2rem;
+        }
+        
+        .order-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, var(--nebula-purple), var(--nebula-blue));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .order-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            background-color: rgba(12, 27, 51, 0.9);
+            margin-top: 2rem;
+            border-top: 1px solid rgba(100, 255, 218, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        footer p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Responsif */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .music-controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .products {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .intro h2 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .products {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background alam semesta yang lebih sepi -->
+    <div class="universe-bg"></div>
+    
+    <!-- Background bintang -->
+    <div class="stars" id="starsContainer"></div>
+    
+    <!-- Header dengan kontrol musik -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-star-and-crescent"></i>
+            <h1>RaxxMarket</h1>
+        </div>
+        
+        <div class="music-controls">
+            <div class="music-info">
+                <div class="music-title">RaxxMarket</div>
+                <div class="music-artist">Raxx</div>
+            </div>
+            <button id="playPauseBtn">
+                <i class="fas fa-pause" id="playIcon"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Konten utama -->
+    <main class="container">
+        <section class="intro">
+            <h2>Selamat Datang di RaxxMarket</h2>
+            <p>Temukan produk-produk yang berkualitas. Temukan pengalaman baru order via web</p>
+            <p><strong>Pesan sekarang dengan mudah!</strong></p>
+        </section>
+        
+        <!-- Daftar produk -->
+        <section class="products" id="productsContainer">
+            <!-- Produk akan di-generate oleh JavaScript -->
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <p>RaxxMarket &copy; 2023 - 2026</p>
+        <p>Terimakasih telah menggunakan web ini, THANKS TO : RAXX,DANJI,KYANZZ</p>
+        <p>Hubungi kami: nugrohoaufa94@gmail.com</p>
+    </footer>
+    
+    <!-- Audio untuk lagu -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://files.catbox.moe/7z0sfy.m4a" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+    
+    <script>
+        // Data produk
+        const products = [
+            { id: 1, name: "Script Bug Whatsapp TREDICT", description: "", price: "Rp 100.000", icon: "fas fa-satellite" },
+            { id: 2, name: "Script Bug Whatsapp OTAXX", description: "", price: "Rp 40.000", icon: "fas fa-globe" },
+            { id: 3, name: "Panel Pterodactyl", description: "", price: "Rp 8.000", icon: "fas fa-tshirt" },
+            { id: 4, name: "Jasa Bug Whatsapp", description: "", price: "Rp 5.000", icon: "fas fa-lightbulb" },
+            { id: 5, name: "Jasa Bannir Whatsapp", description: "", price: "Rp 10.000", icon: "fas fa-gem" },
+            { id: 6, name: "Jasa Unband Whatsapp", description: "", price: "Rp 55.000", icon: "fas fa-image" },
+            { id: 7, name: "Admin Panel", description: "", price: "Rp 15.000", icon: "fas fa-mug-hot" },
+            { id: 8, name: "Murbug VVIP", description: "", price: "Rp 20.000", icon: "fas fa-book" },
+            { id: 9, name: "Aplikasi Qris No KTP", description: "", price: "Rp 1.000", icon: "fas fa-clock" },
+            { id: 10, name: "Func Bug", description: "", price: "Rp 10.000", icon: "fas fa-rocket" }
+        ];
+        
+        // Elemen DOM
+        const productsContainer = document.getElementById('productsContainer');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const playIcon = document.getElementById('playIcon');
+        const starsContainer = document.getElementById('starsContainer');
+        
+        // Fungsi untuk memutar musik saat halaman dimuat
+        window.addEventListener('load', function() {
+            // Coba putar musik dengan interaksi pengguna
+            playBackgroundMusic();
+            
+            // Buat bintang-bintang
+            createStars(300);
+            
+            // Mulai efek bintang jatuh
+            startShootingStars();
+            
+            // Generate produk
+            generateProducts();
+        });
+        
+        // Fungsi untuk memutar musik dengan interaksi pengguna
+        function playBackgroundMusic() {
+            // Memulai musik dengan interaksi pengguna
+            document.body.addEventListener('click', function initAudio() {
+                backgroundMusic.play().catch(e => console.log("Autoplay dicegah:", e));
+                document.body.removeEventListener('click', initAudio);
+            });
+        }
+        
+        // Kontrol musik
+        let isPlaying = true;
+        
+        playPauseBtn.addEventListener('click', function() {
+            if (isPlaying) {
+                backgroundMusic.pause();
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
+            } else {
+                backgroundMusic.play();
+                playIcon.classList.remove('fa-play');
+                playIcon.classList.add('fa-pause');
+            }
+            isPlaying = !isPlaying;
+        });
+        
+        // Fungsi untuk membuat bintang-bintang
+        function createStars(count) {
+            starsContainer.innerHTML = '';
+            
+            // Buat bintang dengan ukuran berbeda
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                
+                // Tentukan ukuran bintang
+                const size = Math.random();
+                if (size < 0.7) {
+                    star.classList.add('star', 'small');
+                    star.style.animation = `slow-twinkle ${5 + Math.random() * 10}s infinite`;
+                } else if (size < 0.9) {
+                    star.classList.add('star', 'medium');
+                    star.style.animation = `twinkle ${3 + Math.random() * 7}s infinite`;
+                } else {
+                    star.classList.add('star', 'large');
+                    star.style.animation = `fast-twinkle ${2 + Math.random() * 5}s infinite`;
+                }
+                
+                // Warna bintang
+                star.style.backgroundColor = "#ffffff";
+                
+                // Posisi acak
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                // Animasi dengan delay acak
+                star.style.animationDelay = `${Math.random() * 10}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Fungsi untuk efek bintang jatuh
+        function startShootingStars() {
+            setInterval(() => {
+                if (Math.random() > 0.7) { // 30% kemungkinan muncul bintang jatuh
+                    createShootingStar();
+                }
+            }, 3000);
+        }
+        
+        function createShootingStar() {
+            const shootingStar = document.createElement('div');
+            shootingStar.classList.add('shooting-star');
+            
+            // Posisi awal acak
+            const startX = Math.random() * 100;
+            const startY = -10;
+            
+            shootingStar.style.left = `${startX}%`;
+            shootingStar.style.top = `${startY}%`;
+            
+            // Warna bintang jatuh
+            shootingStar.style.background = `linear-gradient(to bottom, transparent, #ffffff)`;
+            
+            starsContainer.appendChild(shootingStar);
+            
+            // Animasi bintang jatuh
+            const animation = shootingStar.animate([
+                { transform: `translate(0, 0) rotate(45deg)`, opacity: 0 },
+                { transform: `translate(${Math.random() * 50 - 25}px, ${window.innerHeight + 50}px) rotate(45deg)`, opacity: 1 }
+            ], {
+                duration: 1500,
+                easing: 'cubic-bezier(0.1, 0.7, 1.0, 0.1)'
+            });
+            
+            // Hapus elemen setelah animasi selesai
+            animation.onfinish = () => {
+                shootingStar.remove();
+            };
+        }
+        
+        // Fungsi untuk men-generate produk
+        function generateProducts() {
+            productsContainer.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                productCard.innerHTML = `
+                    <div class="product-img">
+                        <i class="${product.icon}"></i>
+                    </div>
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p>${product.description}</p>
+                        <div class="product-price">${product.price}</div>
+                        <button class="order-btn" onclick="orderProduct(${product.id})">
+                            <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                `;
+                
+                productsContainer.appendChild(productCard);
+            });
+        }
+        
+        // Fungsi untuk memesan produk
+        function orderProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            alert(`Terima kasih! Anda telah memesan: ${product.name}\nHarga: ${product.price}\nTim kami akan segera menghubungi Anda.`);
+        }
+    </script>
+</body>
+</html>
